@@ -13,3 +13,7 @@ int GetCurrentScore() {
 int GetRecordScore() {
 	return 100;
 }
+
+void RefreshScore() {
+	
+}
