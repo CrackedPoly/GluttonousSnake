@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GluttonousSnake.cpp" />
+    <ClCompile Include="score.cpp" />
     <ClCompile Include="shake.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +160,7 @@
     <ClInclude Include="ege\label.h" />
     <ClInclude Include="ege\sys_edit.h" />
     <ClInclude Include="graphics.h" />
+    <ClInclude Include="score.h" />
     <ClInclude Include="snake.h" />
     <ClInclude Include="ui.h" />
   </ItemGroup>

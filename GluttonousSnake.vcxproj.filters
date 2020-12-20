@@ -24,6 +24,9 @@
     <ClCompile Include="shake.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="score.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="snake.h">
@@ -51,6 +54,9 @@
       <Filter>头文件\ege</Filter>
     </ClInclude>
     <ClInclude Include="ui.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="score.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
