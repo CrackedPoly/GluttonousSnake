@@ -163,8 +163,6 @@
     <ClInclude Include="ege\sys_edit.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="resource3.h" />
-    <ClInclude Include="resource4.h" />
-    <ClInclude Include="resource5.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="snake.h" />
     <ClInclude Include="ui.h" />

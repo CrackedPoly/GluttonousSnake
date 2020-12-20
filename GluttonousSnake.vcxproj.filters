@@ -65,12 +65,6 @@
     <ClInclude Include="resource3.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="resource4.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="resource5.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GluttonousSnake2.rc">

@@ -2,6 +2,7 @@
 // Microsoft Visual C++ 生成的包含文件。
 // 供 GluttonousSnake2.rc 使用
 //
+#define IDI_ICON1                       101
 
 // Next default values for new objects
 // 
