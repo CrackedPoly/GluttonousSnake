@@ -62,12 +62,12 @@
     <ClInclude Include="score.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="resource3.h">
+    <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="GluttonousSnake2.rc">
+    <ResourceCompile Include="GluttonousSnake.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
   </ItemGroup>

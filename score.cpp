@@ -43,19 +43,23 @@ int GetRecordScore() {
 */
 void ReadRecordScore() {
 	int score;
-	FILE* recordFile = fopen("record.txt","r");
+	FILE* recordFile = fopen("record/record.txt","r");
 	if (!recordFile) {
 		WriteRecordScore(0);
+	}else {
+		fscanf(recordFile, "%d", &recordScore);
 	}
-	fscanf(recordFile,"%d",&recordScore);
+	fclose(recordFile); //关闭文件防止内存泄露
 }
 
 /*
 向 record.txt 文件中写入最高游戏分数记录
 */
 void WriteRecordScore(int score) {
-	FILE* recordFile = fopen("record.txt", "w");
-	fprintf(recordFile, "%d", score);
+	FILE* recordFile = fopen("record/record.txt", "w");
+	fputs("0", recordFile);
+	fflush(recordFile); //刷新缓存
+	fclose(recordFile); //关闭文件防止内存泄露
 }
 
 /*
