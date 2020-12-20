@@ -174,17 +174,17 @@ void InitWindow() {
 */
 void DrawMenu() {
 	int TITLE_WIDTH = 520,TITLE_HEIGHT = 119;
-	PIMAGE title = newimage(1039, 238);
+	PIMAGE title = newimage();
 	GetZoomImage(title, "image/title.png", 520, 119);
 	putimage_withalpha(NULL, title, (SCREEN_SIZE - TITLE_WIDTH) / 2, 30);
 	delimage(title);
 	int LOGO_WIDTH = 200, LOGO_HEIGHT = 200;
-	PIMAGE logo = newimage(512, 512);
+	PIMAGE logo = newimage();
 	GetZoomImage(logo, "image/logo.png", LOGO_WIDTH, LOGO_HEIGHT);
 	putimage_withalpha(NULL, logo, (SCREEN_SIZE - LOGO_WIDTH) / 2, 180);
 	delimage(logo);
 	int START_WIDTH = 485, START_HEIGHT = 103;
-	PIMAGE start = newimage(1117, 238);
+	PIMAGE start = newimage();
 	GetZoomImage(start, "image/start.png", START_WIDTH, START_HEIGHT);
 	putimage_withalpha(NULL, start, (SCREEN_SIZE - START_WIDTH) / 2, 400);
 	delimage(start);
@@ -193,16 +193,16 @@ void DrawMenu() {
 void DrawMap() {
 	int WALL_SIZE = 17;
 	int GAP_SIZE = 2;
-	int MAP_ROW = 30, MAP_COLUMN = 19;
-	PIMAGE wall = newimage(WALL_SIZE, WALL_SIZE);
+	int MAP_ROW = 30, MAP_COLUMN = 20;
+	PIMAGE wall = newimage();
 	GetZoomImage(wall, "image/wall.png",WALL_SIZE,WALL_SIZE);
 	for (int i = 0; i < MAP_ROW; i++) {
-		int x = MAP_COLUMN * (WALL_SIZE + GAP_SIZE);
+		int x = (MAP_COLUMN - 1) * (WALL_SIZE + GAP_SIZE);
 		int y = i * (WALL_SIZE + GAP_SIZE);
 		putimage_withalpha(NULL, wall, 0, y);
 		putimage_withalpha(NULL, wall, x, y);
 	}
-	for (int i = 1; i <= 19; i++) {
+	for (int i = 0; i < MAP_COLUMN; i++) {
 		int x = i * (WALL_SIZE + GAP_SIZE);
 		int y = (MAP_ROW - 1) * (WALL_SIZE + GAP_SIZE);
 		putimage_withalpha(NULL, wall, x, 0);
