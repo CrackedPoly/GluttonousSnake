@@ -13,10 +13,45 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\ege">
+      <UniqueIdentifier>{b2165812-3b36-4232-a4b3-e6c3efa8f0e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GluttonousSnake.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="shake.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="snake.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ege.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ege\button.h">
+      <Filter>头文件\ege</Filter>
+    </ClInclude>
+    <ClInclude Include="ege\egecontrolbase.h">
+      <Filter>头文件\ege</Filter>
+    </ClInclude>
+    <ClInclude Include="ege\fps.h">
+      <Filter>头文件\ege</Filter>
+    </ClInclude>
+    <ClInclude Include="ege\label.h">
+      <Filter>头文件\ege</Filter>
+    </ClInclude>
+    <ClInclude Include="ege\sys_edit.h">
+      <Filter>头文件\ege</Filter>
+    </ClInclude>
+    <ClInclude Include="button.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

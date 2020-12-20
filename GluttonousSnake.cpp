@@ -2,11 +2,10 @@
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>//! 为了用函数time() 
-#include <conio.h>
 #include <cmath>
 #include <windows.h>//!这个就是为了用句柄 和一个cls（）清屏的函数 
-#pragma warning(disable: 4996)
-//！就是爸爸的备注 
+#include "graphics.h" //导入图形库
+#define SCREEN_SIZE 569
 using namespace std;
 
 /*** 光标定位 ***/
@@ -149,97 +148,93 @@ bool go_ahead()//！ 前进这里他是用的一个新node temp 这个节点保�
 	return true;
 }
 
-/*** 主函数 ***/
-int main()
-{
-	cout << "--------------------贪吃蛇---------------------" << endl;
-	cout << "请先输入两个数,表示地图大小.要求长宽均不小于10." << endl;
-	cout << "请注意窗口大小,以免发生错位.建议将窗口调为最大." << endl;
-	cout << "再选择难度.请在1-10中输入1个数,1最简单,10则最难" << endl;
-	cout << "然后进入游戏画面,以方向键控制方向.祝你游戏愉快!" << endl;
-	cout << "-----------------------------------------------" << endl;
-	cin >> m >> n;              //!最开始输入宽度和长度 
-	if (m < 10 || n < 10 || m>25 || n>40)//!它这里的限制是因为食物生成函数里的食物坐标的范围就这么大，如果你要改的话，食物生成函数也得改。 
-	{
-		cout << "ERROR" << endl;
-		system("pause");
-		return 0;
+//从图片文件fileName 中加载图像，图像缩放成 width * height
+void GetZoomImage(PIMAGE pimg, const char* fileName, int width, int height) {
+	PIMAGE temp = newimage();
+	getimage(temp, fileName);
+	if ((getwidth(pimg) != width) || (getheight(pimg) != height)) {
+		resize(pimg, width, height);
 	}
-	int hard;
-	cin >> hard;//!难度选择 
-	if (hard <= 0 || hard > 100)
-	{
-		cout << "ERROR" << endl;
-		system("pause");
-		return 0;
+	putimage(pimg, 0, 0, width, height, temp, 0, 0, getwidth(temp), getheight(temp));
+	delimage(temp);
+}
+
+/*
+初始化窗口
+*/
+void InitWindow() {
+	initgraph(SCREEN_SIZE, SCREEN_SIZE, 0); // 初始化，显示一个窗口
+	setcaption(L"Gluttonous Snake Version 1.0"); // 设置窗口标题
+	PIMAGE background = newimage(600, 600);
+	getimage(background, "image/background.png");
+	//对目标图像（这里是窗口）开启透明，这是必须的
+	ege_enable_aa(true);
+	//将图片生成纹理
+	ege_gentexture(true, background);
+	//对图片设置透明度
+	ege_setalpha(0xFF, background);
+	//缩放绘制纹理图到窗口上
+	ege_puttexture(background, ege_rect{ 0, 0, SCREEN_SIZE, SCREEN_SIZE }, ege_rect{ 0, 0, SCREEN_SIZE, SCREEN_SIZE });
+	delimage(background);
+}
+
+/*
+初始化菜单页面
+*/
+void InitMenu() {
+	int TITLE_WIDTH = 520,TITLE_HEIGHT = 119;
+	PIMAGE title = newimage(1039, 238);
+	GetZoomImage(title, "image/title.png", 520, 119);
+	putimage_withalpha(NULL, title, (SCREEN_SIZE - TITLE_WIDTH) / 2, 30);
+	delimage(title);
+	int LOGO_WIDTH = 200, LOGO_HEIGHT = 200;
+	PIMAGE logo = newimage(512, 512);
+	GetZoomImage(logo, "image/logo.png", LOGO_WIDTH, LOGO_HEIGHT);
+	putimage_withalpha(NULL, logo, (SCREEN_SIZE - LOGO_WIDTH) / 2, 180);
+	delimage(logo);
+	int START_WIDTH = 485, START_HEIGHT = 103;
+	PIMAGE start = newimage(1117, 238);
+	GetZoomImage(start, "image/start.png", START_WIDTH, START_HEIGHT);
+	putimage_withalpha(NULL, start, (SCREEN_SIZE - START_WIDTH) / 2, 400);
+	delimage(start);
+}
+
+void DrawMap() {
+	int WALL_SIZE = 17;
+	int GAP_SIZE = 2;
+	int MAP_ROW = 30, MAP_COLUMN = 19;
+	PIMAGE wall = newimage(WALL_SIZE, WALL_SIZE);
+	GetZoomImage(wall, "image/wall.png",WALL_SIZE,WALL_SIZE);
+	for (int i = 0; i < MAP_ROW; i++) {
+		int x = MAP_COLUMN * (WALL_SIZE + GAP_SIZE);
+		int y = i * (WALL_SIZE + GAP_SIZE);
+		putimage_withalpha(NULL, wall, 0, y);
+		putimage_withalpha(NULL, wall, x, y);
 	}
-	/*** 数据全部初始化，包括蛇长，位置，方向 ***/
-	snake_length = 5; //最开始蛇长为 5
-	clock_t a, b; //!一种叫做clock_t的数据类型（其实就是long，你用哪个都可以）， 
-				  //!  与clock（）函数对应 ,clock()函数返回程序从启动到函数调用所占CPU的时间，为了后面的难度提高使用，花样这么多 
-	char ch;        //!这是为了后面读你的方向键，就是上下左右 
-	double hard_len;//!这里是为了搞花样才声明的 
-	for (int i = 0; i <= 4; i++)//!最开始随便把蛇搞到一个位置去 
-	{
-		snake[i].x = 1;
-		snake[i].y = 5 - i;
+	for (int i = 1; i <= 19; i++) {
+		int x = i * (WALL_SIZE + GAP_SIZE);
+		int y = (MAP_ROW - 1) * (WALL_SIZE + GAP_SIZE);
+		putimage_withalpha(NULL, wall, x, 0);
+		putimage_withalpha(NULL, wall, x, y);
 	}
-	dir = 3;
-	/*** 输出初始地图，蛇与食物 ***/
-	system("cls");//!清屏 
-	hide();//! 隐藏光标 
-	print_wall();//!上墙 
-	print_food();//!上食物 
-	print_snake();//!上蛇 
-	locate(m + 2, 0);//!为了把它的那个记录你的蛇的长度的东西搞出来 
-	cout << "Now length: ";
-	/*** 开始游戏 ***/
-	while (1)//!循环 
-	{
-		/*** 难度随长度增加而提高 ***/
-		hard_len = (double)snake_length / (double)(m * n);//!这个就是前面讲的，snake_length原来是个int，他还除了个游戏框的面积，高，实在是高 
-		/*** 调节时间，单位是ms ***/
-		a = clock();//!a的值是运行时间了，这里是游戏开始的时间 
-		while (1)
-		{
-			b = clock();//！b的值是当次循环开始的时间
-			if (b - a >= (int)(400 - 30 * hard) * (1 - sqrt(hard_len))) break;//!这个是为了调节每一次循环在这里停留的时间，它设定好了一些标准 
-																			//!当你选择的难度所对应的时间到了，他才会继续下一步，就是为了达到调节难度的目的 
+	delimage(wall);
+}
+
+/*
+主函数，主要负责生成游戏窗口
+*/
+int main(){
+	InitWindow();
+	InitMenu();
+	getch();
+	cleardevice();
+	InitWindow();
+	DrawMap();
+	while (TRUE) {
+		char move = getch();
+		if(move == 'w' || move == 'W'){
+			
 		}
-		/*** 接受键盘输入的上下左右，并以此改变方向 ***/
-		if (kbhit())//!等你敲键盘下才会运行if里的语句 
-		{
-			ch = getch();//!读一个你输入的上下左右 
-			if (ch == -32)//!我一开始没看懂,查了一下，好像是在c++里上下左右在输入的时候，会在缓存区里生成两个字符，第一个字符的ASCii码就是 -32 
-			{            //!他先用一个getch（）把第一个字符给清除了，再根据上下左右在缓存区的第二个字符的不同来区别。 
-				ch = getch();
-				switch (ch)//! 72表示上移 80表示 75表示左移 77表示右移 
-				{          //! dir=0左 dir=1右 dir=2上 dir=3下 
-				case 72://!ch=72时 ,上移 
-					if (dir == 2 || dir == 3)//！假如dir≠2/3就表示 蛇原来在左右移，就不用改方向 
-						dir = 0;             //! 反之，dir=2/3就表示，蛇原来在上下移，就得把dir改成0,表示向左走   后面类似 
-					break;
-				case 80:
-					if (dir == 2 || dir == 3)
-						dir = 1;
-					break;
-				case 75:
-					if (dir == 0 || dir == 1)
-						dir = 2;
-					break;
-				case 77:
-					if (dir == 0 || dir == 1)
-						dir = 3;
-					break;
-				}
-			}
-		}
-		/*** 前进 ***/
-		if (!go_ahead()) break;//!判断蛇有没有撞，撞了就游戏结束 
-		/*** 在最后输出此时长度 ***/
-		locate(m + 2, 12);
-		cout << snake_length;
 	}
-	system("pause");
 	return 0;
 }
