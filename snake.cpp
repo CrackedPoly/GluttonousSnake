@@ -2,7 +2,7 @@
 #include <ctime>
 #include <math.h>
 
-int hard = 5, snakeLength = 2, dir=3, hardLevel;
+int hard = 5, snakeLength = 5, dir=3, hardLevel;
 char ch;
 node food;
 node snake[600];
@@ -73,6 +73,8 @@ bool go_ahead()//£¡ Ç°½øÕâÀïËûÊÇÓÃµÄÒ»¸öĞÂnode temp Õâ¸ö½Úµã±£´æ×îºóÒ»¸öÎ»ÖÃ ¡£È
 		snake[i] = snake[i - 1];
 	snake[0].x += INTVAL*direct[dir][0];//dir¾ÍÊÇ·½Ïò²ÎÊı 
 	snake[0].y += INTVAL*direct[dir][1];
+	cleardevice(snake[1].img);//Çå³ıÉßÍ·
+	GetZoomImage(snake[1].img, "./image/body.png", 17, 17);
 	putimage_withalpha(NULL,snake[1].img,snake[1].x, snake[1].y);  //!Õâ¸öÊÇÎªÁË°ÑÔ­À´ÉßÍ·Î»ÖÃµÄ±ä³É·ÇÉßÍ·½ÚµãµÄ
 	/*** ³Ôµ½ÁËÊ³Îï ***/
 	if (snake[0].x == food.x && snake[0].y == food.y)//!¼ÙÈç³Ôµ½ÁËÊ³Îï£¬¾ÍÈÃËüµÄÎ²°ÍÖØĞÂ¼ÓÉÏÈ¥£¬ËùÓĞÇ°ÃæÒª±£ÁôÎ²°Í½Úµã 
