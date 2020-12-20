@@ -1,8 +1,22 @@
-// 节点，用来表示蛇 
-struct SnakeNode{
+#include "ui.h"
+#define INTVAL 19
+#define XBLOCKS 20
+#define YBLOCKS 30
+
+typedef struct node//节点
+{
 	int x, y;
-}SNAKE[1000];
+	PIMAGE img;
+}node;
+
+extern int hard, snakeLength, dir;
+extern node food;
+extern node snake[600];
+extern int direct[4][2];
+
 
 void PrintSnake();
-void SnakeMove();
-int IsCrashed();
+bool IsCorrect();
+bool PrintFood();
+bool go_ahead();
+bool GameStart();

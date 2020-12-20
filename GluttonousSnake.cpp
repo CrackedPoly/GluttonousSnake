@@ -1,5 +1,6 @@
-﻿#include "ui.h"
-#include "score.h"
+﻿#include "score.h"
+#include "snake.h"
+#include "ui.h"
 #define SCREEN_SIZE 568
 
 /*
@@ -66,8 +67,19 @@ void DrawMap() {
 void DrawScore() {
 	int currentScore = GetCurrentScore();
 	int recordScore = GetRecordScore();
-	setfont(-16, 0, "宋体");
-	outtextxy(378, 0, "sb");
+	// 设置输出效果为抗锯齿（LOGFONTA是MBCS版本，LOGFONTW是UTF16版本）
+	LOGFONTA f;
+	getfont(&f);                          // 获取当前字体设置
+	f.lfHeight = 35;                      // 设置字体高度为 48（包含行距）
+	strcpy(f.lfFaceName, "黑体");         // 设置字体为“黑体”
+	f.lfQuality = ANTIALIASED_QUALITY;    // 设置输出效果为抗锯齿  
+	f.lfWeight = FW_BLACK;
+	setcolor(EGERGB(36,33,33));				      //文字的颜色
+	setfont(&f);                          // 设置字体样式
+	setbkmode(TRANSPARENT);               //设置文字背景为透明
+	xyprintf(455, 175, "%03d",currentScore);
+	xyprintf(455, 284, "%03d", recordScore > currentScore ? recordScore : currentScore);
+
 }
 
 void DrawSidebar() {
@@ -80,22 +92,29 @@ void DrawSidebar() {
 	DrawScore();
 }
 
+void GameOver() {
+	int GAMEOVER_WIDTH = 378;
+	int GAMEOVER_HEIGHT = SCREEN_SIZE;
+	PIMAGE gameover = newimage();
+	GetZoomImage(gameover, "image/gameover.png", GAMEOVER_WIDTH, GAMEOVER_HEIGHT);
+	putimage_withalpha(NULL, gameover, 0, 0);
+}
+
 /*
 主函数，主要负责生成游戏窗口
 */
 int main(){
-	InitWindow();
-	DrawMenu();
-	getch();
-	cleardevice();
-	InitWindow();
-	DrawMap();
-	DrawSidebar();
 	while (TRUE) {
-		char move = getch();
-		if(move == 'w' || move == 'W'){
-			
-		}
+		InitWindow();
+		DrawMenu();
+		getch();
+		cleardevice();
+		InitWindow();
+		DrawMap();
+		DrawSidebar();
+		GameStart();
+		GameOver();
+		getch();
 	}
 	return 0;
 }

@@ -21,10 +21,13 @@
     <ClCompile Include="GluttonousSnake.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="shake.cpp">
+    <ClCompile Include="score.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="score.cpp">
+    <ClCompile Include="snake.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ui.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

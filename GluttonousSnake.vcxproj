@@ -150,7 +150,8 @@
   <ItemGroup>
     <ClCompile Include="GluttonousSnake.cpp" />
     <ClCompile Include="score.cpp" />
-    <ClCompile Include="shake.cpp" />
+    <ClCompile Include="snake.cpp" />
+    <ClCompile Include="ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ege.h" />
