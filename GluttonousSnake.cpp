@@ -4,7 +4,8 @@
 #include <ctime>//! 为了用函数time() 
 #include <cmath>
 #include <windows.h>//!这个就是为了用句柄 和一个cls（）清屏的函数 
-#include "graphics.h" //导入图形库
+#include "ui.h"
+
 #define SCREEN_SIZE 569
 using namespace std;
 
@@ -148,16 +149,6 @@ bool go_ahead()//！ 前进这里他是用的一个新node temp 这个节点保�
 	return true;
 }
 
-//从图片文件fileName 中加载图像，图像缩放成 width * height
-void GetZoomImage(PIMAGE pimg, const char* fileName, int width, int height) {
-	PIMAGE temp = newimage();
-	getimage(temp, fileName);
-	if ((getwidth(pimg) != width) || (getheight(pimg) != height)) {
-		resize(pimg, width, height);
-	}
-	putimage(pimg, 0, 0, width, height, temp, 0, 0, getwidth(temp), getheight(temp));
-	delimage(temp);
-}
 
 /*
 初始化窗口
@@ -181,7 +172,7 @@ void InitWindow() {
 /*
 初始化菜单页面
 */
-void InitMenu() {
+void DrawMenu() {
 	int TITLE_WIDTH = 520,TITLE_HEIGHT = 119;
 	PIMAGE title = newimage(1039, 238);
 	GetZoomImage(title, "image/title.png", 520, 119);
@@ -220,16 +211,21 @@ void DrawMap() {
 	delimage(wall);
 }
 
+void DrawSidebar() {
+	
+}
+
 /*
 主函数，主要负责生成游戏窗口
 */
 int main(){
 	InitWindow();
-	InitMenu();
+	DrawMenu();
 	getch();
 	cleardevice();
 	InitWindow();
 	DrawMap();
+	DrawSidebar();
 	while (TRUE) {
 		char move = getch();
 		if(move == 'w' || move == 'W'){

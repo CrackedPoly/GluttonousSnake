@@ -152,7 +152,6 @@
     <ClCompile Include="shake.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="button.h" />
     <ClInclude Include="ege.h" />
     <ClInclude Include="ege\button.h" />
     <ClInclude Include="ege\egecontrolbase.h" />
@@ -161,6 +160,7 @@
     <ClInclude Include="ege\sys_edit.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="snake.h" />
+    <ClInclude Include="ui.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
