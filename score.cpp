@@ -1,7 +1,9 @@
 #include "score.h"
 #include "ui.h"
+#include "stdio.h"
 
 int currentScore = 0;
+int recordScore = 0;
 
 void SetCurrentScore(int score) {
 	currentScore = score;
@@ -12,7 +14,18 @@ int GetCurrentScore() {
 }
 
 int GetRecordScore() {
-	return 100;
+	return recordScore;
+}
+
+void ReadRecordScore() {
+	int score;
+	FILE* recordFile = fopen("record.txt","r");
+	fscanf(recordFile,"%d",&recordScore);
+}
+
+void WriteRecordScore(int score) {
+	FILE* recordFile = fopen("record.txt", "w");
+	fprintf(recordFile, "%d", score);
 }
 
 void DrawScore() {
@@ -28,8 +41,8 @@ void DrawScore() {
 	setcolor(EGERGB(36, 33, 33));				      //文字的颜色
 	setfont(&f);                          // 设置字体样式
 	setbkmode(TRANSPARENT);               //设置文字背景为透明
-	xyprintf(455, 175, "%03d", currentScore);
-	xyprintf(455, 284, "%03d", recordScore > currentScore ? recordScore : currentScore);
+	xyprintf(455, 175, "%d", currentScore);
+	xyprintf(455, 284, "%d", recordScore > currentScore ? recordScore : currentScore);
 }
 
 void RefreshScore() {

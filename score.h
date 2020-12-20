@@ -3,3 +3,5 @@ int GetCurrentScore();
 int GetRecordScore();
 void RefreshScore();
 void DrawScore();
+void WriteRecordScore(int score);
+void ReadRecordScore();

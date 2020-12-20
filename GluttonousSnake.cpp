@@ -71,6 +71,7 @@ void DrawSidebar() {
 	PIMAGE sidebar = newimage();
 	GetZoomImage(sidebar, "image/sidebar.png",SIDEBAR_WIDTH,SIDEBAR_HEIGHT);
 	putimage_withalpha(NULL, sidebar,SIDEBAR_X,0);
+	ReadRecordScore();
 	DrawScore();
 }
 
@@ -80,6 +81,9 @@ void GameOver() {
 	PIMAGE gameover = newimage();
 	GetZoomImage(gameover, "image/gameover.png", GAMEOVER_WIDTH, GAMEOVER_HEIGHT);
 	putimage_withalpha(NULL, gameover, 0, 0);
+	if (GetCurrentScore() > GetRecordScore()) {
+		WriteRecordScore(GetCurrentScore());
+	}
 }
 
 /*
