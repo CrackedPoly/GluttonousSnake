@@ -1,18 +1,30 @@
+/***********************************************
+*  Copyright 窝里斗
+*
+*  @file     snake.cpp
+*  @brief    主要负责游戏运行时蛇的运动以及逻辑性判断
+*  @author   刘轶博，罗鉴
+*  @date     2020/12/21
+*
+***********************************************/
 #include "snake.h"
 #include "score.h"
 #include <time.h>
 
-int hard = 5, snakeLength = 2, dir=3, hardLevel;
-char ch;
-node food;
-node snake[600];
-int direct[4][2] = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
-PIMAGE BACKGROUND = newimage();
-PIMAGE FOOD = newimage();
-PIMAGE SNAKE_BODY = newimage();
-PIMAGE SNAKE_HEAD = newimage();
 
+int snakeLength = 2, dir=3;			//蛇的初始长度和初始行动方向
+char ch;							//接受键盘输入
+node food;							//记录食物的位置
+node snake[600];					//记录蛇的位置
+int direct[4][2] = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };	//对应蛇的行动四个方向,分别为左,右,上,下
+PIMAGE BACKGROUND = newimage();		//背景
+PIMAGE FOOD = newimage();			//食物
+PIMAGE SNAKE_BODY = newimage();		//蛇身
+PIMAGE SNAKE_HEAD = newimage();		//蛇头
 
+/*
+打印蛇
+*/
 void PrintSnake()
 {
 	putimage_withalpha(NULL, SNAKE_HEAD, snake[0].x, snake[0].y);
@@ -23,8 +35,22 @@ void PrintSnake()
 	return;
 }
 
-/*** 判断是否撞墙或者自撞 ***/
-bool IsCorrect() //! 容易晓得，撞墙或撞到自己就输出0 
+/*
+重新游戏时初始化蛇
+*/
+void InitSnake()
+{
+	snake[0].x = 1 * INTVAL;
+	snake[0].y = 2 * INTVAL;
+	snake[1].x = 1 * INTVAL;
+	snake[1].y = 1 * INTVAL;
+	snakeLength = 2;
+}
+
+/*
+判断蛇是否撞墙或者自撞
+*/
+bool IsCorrect()
 {
 	if (snake[0].x == 0 || snake[0].y == 0 || snake[0].x == INTVAL*(XBLOCKS-1) || snake[0].y == INTVAL*(YBLOCKS-1)) 
 		return false;
@@ -36,7 +62,9 @@ bool IsCorrect() //! 容易晓得，撞墙或撞到自己就输出0
 	return true;
 }
 
-/*** 随机打印食物 ***/
+/*
+随机打印食物
+*/
 bool PrintFood()
 {
 	srand((unsigned)time(0));
@@ -62,75 +90,72 @@ bool PrintFood()
 	return true;
 }
 
-/*** 蛇的前进 ***/
-bool go_ahead()//！ 前进这里他是用的一个新node temp 这个节点保存最后一个位置 。然后每个原来蛇身体的节点让它等于他们分别前面的一个节点 
-{              //!   再通过蛇头这个节点加上 direct 就是向前移动了一个位置 
+/*
+蛇的前进
+*/
+bool go_ahead()
+{ 
 	node temp = snake[snakeLength - 1];;
 	bool e = false;
 	for (int i = snakeLength - 1; i >= 1; i--)
 		snake[i] = snake[i - 1];
-	snake[0].x += INTVAL*direct[dir][0];//dir就是方向参数 
+	snake[0].x += INTVAL*direct[dir][0];
 	snake[0].y += INTVAL*direct[dir][1];
-	/*** 吃到了食物 ***/
-	if (snake[0].x == food.x && snake[0].y == food.y)//!假如吃到了食物，就让它的尾巴重新加上去，所有前面要保留尾巴节点 
+	//如果吃到了食物
+	if (snake[0].x == food.x && snake[0].y == food.y)
 	{
 		snakeLength++;
 		e = true;
 		SetCurrentScore(GetCurrentScore() + 1);
 		RefreshScore();
 		snake[snakeLength - 1] = temp;
-	}
-	/*** 输出此时蛇状态 ***/
-	if(e)
 		PrintFood();
-	/*** 如果自撞 ***/
-	if (!IsCorrect())//! 假如蛇头撞了，就游戏结束 
+	}
+	//如果自撞或者撞墙
+	if (!IsCorrect())
 	{
 		return false;
 	}
 	return true;
 }
 
-#include <stdio.h>
-
-int x = 0;
+/*
+游戏开始
+*/
 bool GameStart()
-{
+{	//加载图像
 	getimage(BACKGROUND, "image/background.png");
 	GetZoomImage(FOOD, "image/food.png", 17, 17);
 	GetZoomImage(SNAKE_BODY, "image/body.png", 17, 17);
 	GetZoomImage(SNAKE_HEAD, "image/head.png", 17, 17);
-	snake[0].x = 1 * INTVAL;
-	snake[0].y = 2 * INTVAL;
-	snake[1].x = 1 * INTVAL;
-	snake[1].y = 1 * INTVAL;
+	InitSnake();
 	PrintFood();
 	while (true)
 	{
 		PrintSnake();
-		delay_ms(150 + 1000 / snakeLength);
+		delay_ms(150 + 1000 / snakeLength);		//延时函数,达到刷新屏幕的效果
 		putimage_withalpha(NULL,BACKGROUND,17,17,17,17,18 * 17 + 19 * 2,28 * 17 + 29 * 2);
 		putimage_withalpha(NULL, FOOD, food.x, food.y);
-		if (kbhit())//!等你敲键盘下才会运行if里的语句 
+		if (kbhit())							//敲下键盘才会运行if里的语句,改变dir的值从而改变方向
 		{
 			ch = getch();
 			if (ch >= 'a' && ch <= 'z') ch += 'A' - 'a';
 			switch (ch)
 			{          
 			case 'A':
-				if (dir == 2 || dir == 3)//！假如dir≠2/3就表示 蛇原来在左右移，就不用改方向 
-					dir = 0;             //! 反之，dir=2/3就表示，蛇原来在上下移，就得把dir改成0,表示向左走   后面类似 
+				if (dir != 1)
+					dir = 0;
 				break;
 			case 'D':
-				if (dir == 2 || dir == 3)
+				if (dir != 0)
 					dir = 1;
 				break;
 			case 'W':
-				if (dir == 0 || dir == 1)
+				if (dir != 3)
 					dir = 2;
 				break;
 			case 'S':
-				if (dir == 0 || dir == 1)
+				if (dir != 2)
 					dir = 3;
 				break;
 			}
