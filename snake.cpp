@@ -1,23 +1,24 @@
 #include "snake.h"
-#include <ctime>
-#include <math.h>
+#include "score.h"
+#include <time.h>
 
-int hard = 5, snakeLength = 5, dir=3, hardLevel;
+int hard = 5, snakeLength = 2, dir=3, hardLevel;
 char ch;
 node food;
 node snake[600];
 int direct[4][2] = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+PIMAGE BACKGROUND = newimage();
+PIMAGE FOOD = newimage();
+PIMAGE SNAKE_BODY = newimage();
+PIMAGE SNAKE_HEAD = newimage();
+
 
 void PrintSnake()
 {
-	snake[0].img = newimage();
-	GetZoomImage(snake[0].img, "./image/head.png",17, 17);
-	putimage_withalpha(NULL, snake[0].img, snake[0].x, snake[0].y);
-	for (int i = 1; i <= snakeLength - 1; i++)
+	putimage_withalpha(NULL, SNAKE_HEAD, snake[0].x, snake[0].y);
+	for (int i = 1; i < snakeLength; i++)
 	{
-		snake[i].img = newimage();
-		GetZoomImage(snake[i].img, "./image/body.png", 17, 17);
-		putimage_withalpha(NULL, snake[i].img,snake[i].x, snake[i].y);
+		putimage_withalpha(NULL, SNAKE_BODY,snake[i].x, snake[i].y);
 	}
 	return;
 }
@@ -57,42 +58,31 @@ bool PrintFood()
 		if (e) 
 			break;
 	}
-	food.img = newimage();
-	GetZoomImage(food.img, "./image/food.png", 17, 17);
-	putimage_withalpha(NULL,food.img,food.x, food.y);
+	putimage_withalpha(NULL, FOOD, food.x, food.y);
 	return true;
 }
 
 /*** ÉßµÄÇ°½ø ***/
 bool go_ahead()//£¡ Ç°½øÕâÀïËûÊÇÓÃµÄÒ»¸öĞÂnode temp Õâ¸ö½Úµã±£´æ×îºóÒ»¸öÎ»ÖÃ ¡£È»ºóÃ¿¸öÔ­À´ÉßÉíÌåµÄ½ÚµãÈÃËüµÈÓÚËûÃÇ·Ö±ğÇ°ÃæµÄÒ»¸ö½Úµã 
 {              //!   ÔÙÍ¨¹ıÉßÍ·Õâ¸ö½Úµã¼ÓÉÏ direct ¾ÍÊÇÏòÇ°ÒÆ¶¯ÁËÒ»¸öÎ»ÖÃ 
-	node temp;
+	node temp = snake[snakeLength - 1];;
 	bool e = false;
-	temp = snake[snakeLength - 1];
 	for (int i = snakeLength - 1; i >= 1; i--)
 		snake[i] = snake[i - 1];
 	snake[0].x += INTVAL*direct[dir][0];//dir¾ÍÊÇ·½Ïò²ÎÊı 
 	snake[0].y += INTVAL*direct[dir][1];
-	cleardevice(snake[1].img);//Çå³ıÉßÍ·
-	GetZoomImage(snake[1].img, "./image/body.png", 17, 17);
-	putimage_withalpha(NULL,snake[1].img,snake[1].x, snake[1].y);  //!Õâ¸öÊÇÎªÁË°ÑÔ­À´ÉßÍ·Î»ÖÃµÄ±ä³É·ÇÉßÍ·½ÚµãµÄ
 	/*** ³Ôµ½ÁËÊ³Îï ***/
 	if (snake[0].x == food.x && snake[0].y == food.y)//!¼ÙÈç³Ôµ½ÁËÊ³Îï£¬¾ÍÈÃËüµÄÎ²°ÍÖØĞÂ¼ÓÉÏÈ¥£¬ËùÓĞÇ°ÃæÒª±£ÁôÎ²°Í½Úµã 
 	{
 		snakeLength++;
 		e = true;
+		SetCurrentScore(GetCurrentScore() + 1);
+		RefreshScore();
 		snake[snakeLength - 1] = temp;
 	}
 	/*** Êä³ö´ËÊ±Éß×´Ì¬ ***/
-	if (!e) //!ÕâÀïÊÇ¼ÙÈçe=false£¬¾ÍÊÇÉßÃ»ÓĞ³Ôµ½Ê³ÎïÊ±¾Í°Ñ×îºóÒ»¸öÎ²°Í½Úµã¸øÈ¥µô£¬Èç¹ûÄã²»È¥µôµÄ»°£¬Ëü¾ÍÁô×ÅÄÇÁË¡£ 
-	{
-		cleardevice(temp.img);
-	}
-	else//£¡Èç¹ûe=true£¬¾ÍÊÇÉß³Ôµ½ÁËÊ³Îï£¬¾ÍÔÙÉú³ÉÒ»¸öÊ³Îï 
+	if(e)
 		PrintFood();
-	snake[0].img = newimage();
-	GetZoomImage(snake[0].img, "./image/head.png", 17, 17);
-	putimage_withalpha(NULL,snake[0].img,snake[0].x, snake[0].y);
 	/*** Èç¹û×Ô×² ***/
 	if (!IsCorrect())//! ¼ÙÈçÉßÍ·×²ÁË£¬¾ÍÓÎÏ·½áÊø 
 	{
@@ -101,49 +91,53 @@ bool go_ahead()//£¡ Ç°½øÕâÀïËûÊÇÓÃµÄÒ»¸öĞÂnode temp Õâ¸ö½Úµã±£´æ×îºóÒ»¸öÎ»ÖÃ ¡£È
 	return true;
 }
 
+#include <stdio.h>
+
+int x = 0;
 bool GameStart()
 {
+	getimage(BACKGROUND, "image/background.png");
+	GetZoomImage(FOOD, "image/food.png", 17, 17);
+	GetZoomImage(SNAKE_BODY, "image/body.png", 17, 17);
+	GetZoomImage(SNAKE_HEAD, "image/head.png", 17, 17);
 	snake[0].x = 1 * INTVAL;
-	snake[0].y = 1 * INTVAL;
-	PrintSnake();
+	snake[0].y = 2 * INTVAL;
+	snake[1].x = 1 * INTVAL;
+	snake[1].y = 1 * INTVAL;
 	PrintFood();
 	while (true)
 	{
-		/*** ÄÑ¶ÈËæ³¤¶ÈÔö¼Ó¶øÌá¸ß ***/
-		hardLevel = (int)((double)snakeLength / (double)(XBLOCKS * YBLOCKS)); //!Õâ¸ö¾ÍÊÇÇ°Ãæ½²µÄ£¬snake_lengthÔ­À´ÊÇ¸öint£¬
-		/*** µ÷½ÚÊ±¼ä£¬µ¥Î»ÊÇms ***/
-		delay((long)(400 - 30 * hard) * (1 - sqrt(hardLevel)));
-		/*** ½ÓÊÜ¼üÅÌÊäÈëµÄÉÏÏÂ×óÓÒ£¬²¢ÒÔ´Ë¸Ä±ä·½Ïò ***/
-		if (kbhit()) //!µÈÇÃ¼üÅÌÏÂ²Å»áÔËĞĞifÀïµÄÓï¾ä
+		PrintSnake();
+		delay_ms(150 + 1000 / snakeLength);
+		putimage_withalpha(NULL,BACKGROUND,17,17,17,17,18 * 17 + 19 * 2,28 * 17 + 29 * 2);
+		putimage_withalpha(NULL, FOOD, food.x, food.y);
+		if (kbhit())//!µÈÄãÇÃ¼üÅÌÏÂ²Å»áÔËĞĞifÀïµÄÓï¾ä 
 		{
-			ch = getch();  //!¶ÁÒ»¸öÄãÊäÈëµÄÉÏÏÂ×óÓÒ
-			if (ch == -32) //!ÔÚc++ÀïÉÏÏÂ×óÓÒÔÚÊäÈëµÄÊ±ºò£¬»áÔÚ»º´æÇøÀïÉú³ÉÁ½¸ö×Ö·û£¬µÚÒ»¸ö×Ö·ûµÄASCiiÂë¾ÍÊÇ -32
-			{              //!ÏÈÓÃÒ»¸ögetch£¨£©°ÑµÚÒ»¸ö×Ö·û¸øÇå³ı£¬ÔÙ¸ù¾İÉÏÏÂ×óÓÒÔÚ»º´æÇøµÄµÚ¶ş¸ö×Ö·ûµÄ²»Í¬À´Çø±ğ¡£
-				ch = getch();
-				switch (ch)                   //! 72±íÊ¾ÉÏÒÆ 80±íÊ¾ 75±íÊ¾×óÒÆ 77±íÊ¾ÓÒÒÆ
-				{                             //! dir=0×ó dir=1ÓÒ dir=2ÉÏ dir=3ÏÂ
-				case 72:                      //!ch=72Ê± ,ÉÏÒÆ
-					if (dir == 2 || dir == 3) //£¡¼ÙÈçdir¡Ù2/3¾Í±íÊ¾ ÉßÔ­À´ÔÚ×óÓÒÒÆ£¬¾Í²»ÓÃ¸Ä·½Ïò
-						dir = 0;              //! ·´Ö®£¬dir=2/3¾Í±íÊ¾£¬ÉßÔ­À´ÔÚÉÏÏÂÒÆ£¬¾ÍµÃ°Ñdir¸Ä³É0,±íÊ¾Ïò×ó×ß   ºóÃæÀàËÆ
-					break;
-				case 80:
-					if (dir == 2 || dir == 3)
-						dir = 1;
-					break;
-				case 75:
-					if (dir == 0 || dir == 1)
-						dir = 2;
-					break;
-				case 77:
-					if (dir == 0 || dir == 1)
-						dir = 3;
-					break;
-				}
+			ch = getch();
+			if (ch >= 'a' && ch <= 'z') ch += 'A' - 'a';
+			switch (ch)
+			{          
+			case 'A':
+				if (dir == 2 || dir == 3)//£¡¼ÙÈçdir¡Ù2/3¾Í±íÊ¾ ÉßÔ­À´ÔÚ×óÓÒÒÆ£¬¾Í²»ÓÃ¸Ä·½Ïò 
+					dir = 0;             //! ·´Ö®£¬dir=2/3¾Í±íÊ¾£¬ÉßÔ­À´ÔÚÉÏÏÂÒÆ£¬¾ÍµÃ°Ñdir¸Ä³É0,±íÊ¾Ïò×ó×ß   ºóÃæÀàËÆ 
+				break;
+			case 'D':
+				if (dir == 2 || dir == 3)
+					dir = 1;
+				break;
+			case 'W':
+				if (dir == 0 || dir == 1)
+					dir = 2;
+				break;
+			case 'S':
+				if (dir == 0 || dir == 1)
+					dir = 3;
+				break;
 			}
 		}
-		/*** Ç°½ø ***/
-		if (!go_ahead())
-			break; //!ÅĞ¶ÏÉßÓĞÃ»ÓĞ×²£¬×²ÁË¾ÍÓÎÏ·½áÊø
-		return false;
+		if (!go_ahead()) {
+			break;
+		}
 	}
+	return false;
 }

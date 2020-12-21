@@ -6,7 +6,6 @@
 typedef struct node//½Úµã
 {
 	int x, y;
-	PIMAGE img;
 }node;
 
 extern int hard, snakeLength, dir;

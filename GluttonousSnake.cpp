@@ -18,6 +18,7 @@
 */
 void InitWindow() {
 	initgraph(SCREEN_SIZE, SCREEN_SIZE, 0); // 初始化，显示一个窗口
+	setbkcolor(WHITE);
 	setcaption(L"Gluttonous Snake Version 1.0"); // 设置窗口标题
 	PIMAGE background = newimage(600, 600);
 	getimage(background, "image/background.png");

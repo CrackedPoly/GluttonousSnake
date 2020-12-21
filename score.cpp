@@ -74,10 +74,10 @@ void DrawScore() {
 	f.lfHeight = 35;                      // 设置字体高度为 48（包含行距）
 	strcpy(f.lfFaceName, "黑体");         // 设置字体为“黑体”
 	f.lfQuality = ANTIALIASED_QUALITY;    // 设置输出效果为抗锯齿  
-	f.lfWeight = FW_BLACK;
-	setcolor(EGERGB(36, 33, 33));				      //文字的颜色
+	f.lfWeight = FW_BLACK;                // 文字的粗细
+	setcolor(EGERGB(36, 33, 33));		  // 文字的颜色
 	setfont(&f);                          // 设置字体样式
-	setbkmode(TRANSPARENT);               //设置文字背景为透明
+	setbkmode(TRANSPARENT);               // 设置文字背景为透明
 	xyprintf(455, 175, "%d", currentScore);
 	xyprintf(455, 284, "%d", recordScore > currentScore ? recordScore : currentScore);
 }
